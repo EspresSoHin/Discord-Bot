@@ -1,4 +1,3 @@
-from email.mime import message
 import discord
 import random
 
@@ -11,6 +10,8 @@ client = discord.Client(intents=intents)
 @client.event
 async def on_ready():
     print(f"We have logged in as {client.user}")
+    channel = client.get_channel(1459950649427886295)
+    await channel.send("Mephisto has awoken.")
 
 
 @client.event
@@ -88,6 +89,11 @@ async def on_message(message):
 
         answer = random.choice(reponses)
         await message.channel.send(answer)
+
+    if "!commands" in message.content:
+        await message.channel.send(
+            "*Sylus voice in speaker:* Here are Mephisto's commands.\n\n patpat\n shoo\n flies away\n pspsps\n bonks head on you\n caw\n boop\n flick\n boo!\n Good night Mephie\n Good morning Mephie\n Mephie\n Good boy\n Bad boy\n I love you\n Badass trigger\n hurts\n play boss.mp3\n my boy\n Comfort me Mephie"
+        )
 
 
 client.run("token")
