@@ -90,6 +90,11 @@ async def on_message(message):
         answer = random.choice(reponses)
         await message.channel.send(answer)
 
+    if message.content.startswith("Bubblewrap!"):
+        await message.channel.send(
+            "||POP|| ||POP|| ||POP|| ||pffft|| ||POP|| ||POP|| ||POP|| ||POP|| ||POP|| ||pffft||\n||POP|| ||pffft|| ||POP|| ||POP|| ||POP|| ||POP|| ||POP|| ||POP|| ||POP|| ||POP||\n||POP|| ||pffft|| ||POP|| ||pffft|| ||POP|| ||POP|| ||POP|| ||POP|| ||pffft|| ||POP||\n||pffft|| ||POP|| ||POP|| ||POP|| ||POP|| ||pffft|| ||POP|| ||POP|| ||POP|| ||POP||\n||POP|| ||POP|| ||pffft|| ||POP|| ||pffft|| ||POP|| ||pffft|| ||POP|| ||POP|| ||pffft||\n||pffft|| ||POP|| ||POP|| ||POP|| ||POP|| ||pffft|| ||POP|| ||pffft|| ||♡♡♡|| ||POP||\n||POP|| ||POP|| ||pffft|| ||POP|| ||pffft|| ||POP|| ||POP|| ||POP|| ||POP|| ||pffft||\n||POP|| ||pffft|| ||POP|| ||POP|| ||POP|| ||POP|| ||pffft|| ||POP|| ||pffft|| ||POP||\n||pffft|| ||pffft|| ||POP|| ||pffft|| ||POP|| ||pffft|| ||POP|| ||POP|| ||POP|| ||POP||\n||pffft|| ||POP|| ||POP|| ||POP|| ||POP|| ||POP|| ||POP|| ||pffft|| ||POP|| ||pffft||\n||POP|| ||pffft|| ||POP|| ||POP|| ||pffft|| ||pffft|| ||POP|| ||POP|| ||POP|| ||pffft||\n||POP|| ||pffft|| ||POP|| ||POP|| ||POP|| ||POP|| ||pffft|| ||POP|| ||POP|| ||POP||\n||POP|| ||POP|| ||POP|| ||pffft|| ||POP|| ||pffft|| ||POP|| ||pffft|| ||POP|| ||POP||\n||pffft|| ||pffft|| ||POP|| ||POP|| ||POP|| ||POP|| ||pffft|| ||POP|| ||pffft|| ||CAW||\n||POP|| ||POP|| ||POP|| ||pffft|| ||POP|| ||pffft|| ||POP|| ||POP|| ||POP|| ||POP||\n||pffft|| ||POP|| ||pffft|| ||POP|| ||POP|| ||POP|| ||POP|| ||pffft|| ||POP|| ||POP||"
+            )
+
     if "$commands" in message.content:
         await message.channel.send(
             "*Sylus voice in speaker:* Here are Mephisto's commands.\n\n patpat\n shoo\n flies away\n pspsps\n bonks head on you\n caw\n boop\n flick\n boo!\n Good night Mephie\n Good morning Mephie\n Mephie\n Good boy\n Bad boy\n I love you\n Badass trigger\n hurts\n play boss.mp3\n my boy\n Comfort me Mephie"
