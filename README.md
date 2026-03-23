@@ -9,6 +9,8 @@
 <ul>
   <li>✦ Responds to character-related triggers ⟡</li>
   <li>✦ Random positive affirmations among a list of responses⟡</li>
+  <li>✦ Makes fun bubblewrap to pop⟡</li>
+
 <hr>
   
 <h2> 𓆩「What Next?」𓆪 </h2>
