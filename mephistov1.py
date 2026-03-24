@@ -44,7 +44,7 @@ async def on_message(message):
         await message.channel.send("*blinks eyes slowly and shuts down*")
 
     if message.content.startswith("Good morning Mephie"):
-        await message.channel.send("!!! Morning Caw!!!	")
+        await message.channel.send("!!! Morning Caw!!!")
 
     if message.content.startswith("Mephie?"):
         await message.channel.send("*tilts head* Caw?")
@@ -86,14 +86,32 @@ async def on_message(message):
             "?? !! *Mephisto is so excited to see you that he can't even form caws!*",
             "Caw. Caw. Caw. Caw. Caw. Caw. Caw. Caw. Caw. *Mephisto is counting the gems he has collected for each of your accomplishments. He fell asleep, there are too many!*",
         ]
-
         answer = random.choice(reponses)
         await message.channel.send(answer)
 
     if message.content.startswith("Bubblewrap!"):
-        await message.channel.send(
-            "||POP|| ||POP|| ||POP|| ||pffft|| ||POP|| ||POP|| ||POP|| ||POP|| ||POP|| ||pffft||\n||POP|| ||pffft|| ||POP|| ||POP|| ||POP|| ||POP|| ||POP|| ||POP|| ||POP|| ||POP||\n||POP|| ||pffft|| ||POP|| ||pffft|| ||POP|| ||POP|| ||POP|| ||POP|| ||pffft|| ||POP||\n||pffft|| ||POP|| ||POP|| ||POP|| ||POP|| ||pffft|| ||POP|| ||POP|| ||POP|| ||POP||\n||POP|| ||POP|| ||pffft|| ||POP|| ||pffft|| ||POP|| ||pffft|| ||POP|| ||POP|| ||pffft||\n||pffft|| ||POP|| ||POP|| ||POP|| ||POP|| ||pffft|| ||POP|| ||pffft|| ||♡♡♡|| ||POP||\n||POP|| ||POP|| ||pffft|| ||POP|| ||pffft|| ||POP|| ||POP|| ||POP|| ||POP|| ||pffft||\n||POP|| ||pffft|| ||POP|| ||POP|| ||POP|| ||POP|| ||pffft|| ||POP|| ||pffft|| ||POP||\n||pffft|| ||pffft|| ||POP|| ||pffft|| ||POP|| ||pffft|| ||POP|| ||POP|| ||POP|| ||POP||\n||pffft|| ||POP|| ||POP|| ||POP|| ||POP|| ||POP|| ||POP|| ||pffft|| ||POP|| ||pffft||\n||POP|| ||pffft|| ||POP|| ||POP|| ||pffft|| ||pffft|| ||POP|| ||POP|| ||POP|| ||pffft||\n||POP|| ||pffft|| ||POP|| ||POP|| ||POP|| ||POP|| ||pffft|| ||POP|| ||POP|| ||POP||\n||POP|| ||POP|| ||POP|| ||pffft|| ||POP|| ||pffft|| ||POP|| ||pffft|| ||POP|| ||POP||\n||pffft|| ||pffft|| ||POP|| ||POP|| ||POP|| ||POP|| ||pffft|| ||POP|| ||pffft|| ||CAW||\n||POP|| ||POP|| ||POP|| ||pffft|| ||POP|| ||pffft|| ||POP|| ||POP|| ||POP|| ||POP||\n||pffft|| ||POP|| ||pffft|| ||POP|| ||POP|| ||POP|| ||POP|| ||pffft|| ||POP|| ||POP||"
-            )
+        bubbles = ["||pffft||", "||POP||"]
+        secret_bubble1 = "||♡♡♡||"
+        secret_bubble2 = "||CAW||"
+
+        grid = [[random.choice(bubbles) for _ in range(10)] for _ in range(16)]
+
+    
+        row_caw, col_caw = random.randint(0, 15), random.randint(0, 9)
+        row_heart, col_heart = random.randint(0, 15), random.randint(0, 9)
+
+   
+        while (row_caw, col_caw) == (row_heart, col_heart):
+            row_heart, col_heart = random.randint(0, 15), random.randint(0, 9)
+
+   
+        grid[row_caw][col_caw] = secret_bubble2
+        grid[row_heart][col_heart] = secret_bubble1
+
+    
+        bubble_wrap = "\n".join(" ".join(row) for row in grid)
+
+        await message.channel.send(bubble_wrap)
 
     if "$commands" in message.content:
         await message.channel.send(
