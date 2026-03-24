@@ -97,7 +97,7 @@ async def on_message(message):
 
     if "$commands" in message.content:
         await message.channel.send(
-            "*Sylus voice in speaker:* Here are Mephisto's commands.\n\n patpat\n shoo\n flies away\n pspsps\n bonks head on you\n caw\n boop\n flick\n boo!\n Good night Mephie\n Good morning Mephie\n Mephie\n Good boy\n Bad boy\n I love you\n Badass trigger\n hurts\n play boss.mp3\n my boy\n Comfort me Mephie\n Bubblewrap!"
+            "*Sylus voice in speaker:* Here are Mephisto's commands.\n\n patpat\n shoo\n pspsps\n caw\n boop\n flick\n boo!\n Good night Mephie\n Good morning Mephie\n Mephie?\n Good boy\n Bad boy\n I love you\n Badass trigger\n hurts\n play boss.mp3\n my boy\n Comfort me Mephie\n Bubblewrap!"
         )
 
 
