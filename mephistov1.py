@@ -19,62 +19,70 @@ async def on_message(message):
     if message.author == client.user:
         return
 
-    if message.content.startswith("patpat"):
+    if message.content.lower().startswith("patpat"):
         await message.channel.send("*rubs against your hand*")
 
-    if message.content.startswith("shoo"):
+    if message.content.lower().startswith("shoo"):
         await message.channel.send("*flies away*")
 
-    if message.content.startswith("pspsps"):
+    if message.content.lower().startswith("pspsps"):
         await message.channel.send("Caw? *bonks head on you*")
 
-    if message.content.startswith("caw"):
+    if message.content.lower().startswith("caw"):
         await message.channel.send("*pecks your nose*")
 
-    if message.content.startswith("boop"):
+    if message.content.lower().startswith("boop"):
         await message.channel.send("Caw... *nuzzles you*")
 
-    if message.content.startswith("flick"):
+    if message.content.lower().startswith("flick"):
         await message.channel.send("*flapping his wings aggressively*")
 
-    if message.content.startswith("boo!"):
+    if message.content.lower().startswith("boo!"):
         await message.channel.send("CAW! *hides behind Sylus*")
 
-    if message.content.startswith("Good night Mephie"):
+    if message.content.lower().startswith("good night mephie"):
         await message.channel.send("*blinks eyes slowly and shuts down*")
 
-    if message.content.startswith("Good morning Mephie"):
+    if message.content.lower().startswith("good morning mephie"):
         await message.channel.send("!!! Morning Caw!!!")
 
-    if message.content.startswith("Mephie?"):
+    if message.content.lower().startswith("mephie?"):
         await message.channel.send("*tilts head* Caw?")
 
-    if message.content.startswith("Good boy"):
+    if message.content.lower().startswith("good boy"):
         await message.channel.send("*puffs up proudly and does a little dance* Caw!")
 
-    if message.content.startswith("Bad boy"):
+    if message.content.lower().startswith("bad boy"):
         await message.channel.send("*shakes blood off his wings and beak*")
 
-    if message.content.startswith("I love you"):
+    if message.content.lower().startswith("i love you"):
         await message.channel.send("*hides face bashfully* Caw... ♡")
 
-    if message.content.startswith("Badass trigger"):
+    if message.content.lower().startswith("badass trigger"):
         await message.channel.send(
             "https://images-ext-1.discordapp.net/external/PlFF4m9k4UtMs7Obbztrmc5YyOuq3rodXgNMMfC7hQ8/https/media.tenor.com/qfSDkr0lVSAAAAPo/merlo-uccelli.mp4"
         )
 
-    if "hurts" in message.content:
+    if "buffisto" in message.content.lower():
+        sticker = await message.guild.fetch_sticker(1486088700319236127)
+        await message.channel.send(stickers=[sticker]) 
+
+    if "mephisto" in message.content.lower():
+        emoji = '<:blackmeph:1454276098270564373>'
+        await message.add_reaction(emoji)
+
+    if "hurts" in message.content.lower():
         await message.channel.send("*looks sad* Caw... *brings you a little gem*")
 
-    if "play boss.mp3" in message.content:
+    if "play boss.mp3" in message.content.lower():
         await message.channel.send(
             "*Mephisto's speakers turn on* This is Sylus. Stay safe out there. And stop worrying about trivial matters, got it?"
         )
 
-    if "my boy" in message.content:
+    if "my boy" in message.content.lower():
         await message.channel.send("*Mephisto nods cutely at you*")
 
-    if message.content.startswith("Comfort me Mephie"):
+    if message.content.lower().startswith("comfort me mephie"):
         reponses = [
             "Caw! You are the best, Caw!!",
             "You are a cawderful person, Cawcaw!",
@@ -89,7 +97,7 @@ async def on_message(message):
         answer = random.choice(reponses)
         await message.channel.send(answer)
 
-    if message.content.startswith("Bubblewrap!"):
+    if message.content.lower().startswith("bubblewrap!"):
         bubbles = ["||pffft||", "||POP||"]
         secret_bubble1 = "||♡♡♡||"
         secret_bubble2 = "||CAW||"
@@ -113,7 +121,7 @@ async def on_message(message):
 
         await message.channel.send(bubble_wrap)
 
-    if "$commands" in message.content:
+    if "$commands" in message.content.lower():
         await message.channel.send(
             "*Sylus voice in speaker:* Here are Mephisto's commands.\n\n patpat\n shoo\n pspsps\n caw\n boop\n flick\n boo!\n Good night Mephie\n Good morning Mephie\n Mephie?\n Good boy\n Bad boy\n I love you\n Badass trigger\n hurts\n play boss.mp3\n my boy\n Comfort me Mephie\n Bubblewrap!"
         )
