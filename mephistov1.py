@@ -1,10 +1,33 @@
 import discord
 import random
+from discord.ext import tasks
+import datetime
 
 intents = discord.Intents.default()
 intents.message_content = True
 
 client = discord.Client(intents=intents)
+
+sent_today = False
+
+@tasks.loop(seconds=10)
+async def send_at_time():
+    global sent_today
+
+    now = datetime.datetime.now()
+
+    if now.hour == 17 and now.minute == 30:
+        if not sent_today:
+            print("TASK TRIGGERED")
+
+            channel = client.get_channel(1431335581983441098)
+            if channel:
+                await channel.send("*Mephisto pushes a water bottle towards you with his beak.* Caw caw! ")
+
+            sent_today = True
+    else:
+        sent_today = False
+
 
 
 @client.event
@@ -12,6 +35,7 @@ async def on_ready():
     print(f"We have logged in as {client.user}")
     channel = client.get_channel(1459950649427886295)
     await channel.send("Mephisto has awoken.")
+    send_at_time.start()
 
 
 @client.event
@@ -58,11 +82,9 @@ async def on_message(message):
     if message.content.lower().startswith("i love you"):
         await message.channel.send("*hides face bashfully* Caw... ♡")
 
-    if message.content.lower().startswith("badass trigger"):
-        await message.channel.send(
-            "https://images-ext-1.discordapp.net/external/PlFF4m9k4UtMs7Obbztrmc5YyOuq3rodXgNMMfC7hQ8/https/media.tenor.com/qfSDkr0lVSAAAAPo/merlo-uccelli.mp4"
-        )
-
+    if "hurts" in message.content.lower():
+        await message.channel.send("*looks sad* Caw... *brings you a little gem*")
+        
     if "buffisto" in message.content.lower():
         sticker = await message.guild.fetch_sticker(1486088700319236127)
         await message.channel.send(stickers=[sticker]) 
@@ -71,8 +93,10 @@ async def on_message(message):
         emoji = '<:blackmeph:1454276098270564373>'
         await message.add_reaction(emoji)
 
-    if "hurts" in message.content.lower():
-        await message.channel.send("*looks sad* Caw... *brings you a little gem*")
+    if message.content.lower().startswith("badass trigger"):
+        await message.channel.send(
+            "https://images-ext-1.discordapp.net/external/PlFF4m9k4UtMs7Obbztrmc5YyOuq3rodXgNMMfC7hQ8/https/media.tenor.com/qfSDkr0lVSAAAAPo/merlo-uccelli.mp4"
+        )
 
     if "play boss.mp3" in message.content.lower():
         await message.channel.send(
@@ -121,6 +145,8 @@ async def on_message(message):
 
         await message.channel.send(bubble_wrap)
 
+
+
     if "$commands" in message.content.lower():
         await message.channel.send(
             "*Sylus voice in speaker:* Here are Mephisto's commands.\n\n patpat\n shoo\n pspsps\n caw\n boop\n flick\n boo!\n Good night Mephie\n Good morning Mephie\n Mephie?\n Good boy\n Bad boy\n I love you\n Badass trigger\n hurts\n play boss.mp3\n my boy\n Comfort me Mephie\n Bubblewrap!"
@@ -128,3 +154,16 @@ async def on_message(message):
 
 
 client.run("token")
+
+
+
+
+
+
+
+
+
+
+
+
+
