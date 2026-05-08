@@ -2,6 +2,8 @@ import discord
 import random
 from discord.ext import tasks
 import datetime
+import requests
+import json
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -32,10 +34,14 @@ async def send_at_time():
 
 @client.event
 async def on_ready():
+    global jokelist
     print(f"We have logged in as {client.user}")
     channel = client.get_channel(1459950649427886295)
     await channel.send("Mephisto has awoken.")
     send_at_time.start()
+    response = requests.get("https://raw.githubusercontent.com/EspresSoHin/Discord-Bot/refs/heads/Develop/crowkittenjokes.json") #added
+    jokelist = response.json()
+
 
 
 @client.event
@@ -146,10 +152,23 @@ async def on_message(message):
         await message.channel.send(bubble_wrap)
 
 
+    if "tell me a crow joke" in message.content.lower():
+        joke = random.choice(jokelist["crow"])
+        await message.channel.send(joke)
+
+    if "tell me a kitten joke" in message.content.lower():
+        joke = random.choice(jokelist["kitten"])
+        await message.channel.send(joke)
+
+    if "tell me a joke, sylus" in message.content.lower():
+        joke = random.choice(jokelist["sylus"])
+        await message.channel.send(joke)
+
+
 
     if "$commands" in message.content.lower():
         await message.channel.send(
-            "*Sylus voice in speaker:* Here are Mephisto's commands.\n\n patpat\n shoo\n pspsps\n caw\n boop\n flick\n boo!\n Good night Mephie\n Good morning Mephie\n Mephie?\n Good boy\n Bad boy\n I love you\n Badass trigger\n hurts\n play boss.mp3\n my boy\n Comfort me Mephie\n Bubblewrap!"
+            "*Sylus voice in speaker:* Here are Mephisto's commands.\n\n patpat\n shoo\n pspsps\n caw\n boop\n flick\n boo!\n Good night Mephie\n Good morning Mephie\n Mephie?\n Good boy\n Bad boy\n I love you\n Badass trigger\n hurts\n play boss.mp3\n my boy\n Comfort me Mephie\n Bubblewrap!\n Tell me a crow joke\n Tell me a kitten joke\n Tell me a joke, Sylus"
         )
 
 
