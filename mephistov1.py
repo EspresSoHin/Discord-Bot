@@ -30,6 +30,46 @@ async def send_at_time():
     else:
         sent_today = False
 
+### REMINDER STAMINA BOTTLE
+
+@tasks.loop(seconds=10)
+async def send_at_time_weekly():
+    global sent_this_week 
+
+    now = datetime.datetime.now()
+
+    if now.weekday() == 5 and now.hour == 15 and now.minute == 30:
+        if not sent_this_week:
+            print("WEEKLY TASK TRIGGERED")
+
+            channel = client.get_channel(1431335581983441098)
+            if channel:
+                await channel.send("*Mephisto opens stamina bottle and spills it* <@USERID>, you should drink this! Caw caw!")
+
+            sent_this_week = True
+    else:
+        sent_this_week = False
+
+
+####Pour ajouter un prochain reminder ou un test
+
+@tasks.loop(seconds=10)
+async def send_at_time_test():
+    global sent_today_test
+
+    now = datetime.datetime.now()
+
+    if now.hour == 17 and now.minute == 30: #ou autre heure avec toujours 1heure plus tard que la vraie heure
+        if not sent_today_test:
+            print("TEST TASK TRIGGERED")
+
+            channel = client.get_channel(1431335581983441098)
+            if channel:
+                await channel.send("*Sylus voice in Mephisto's speakers:* Sohin, that's enough. Mephisto needs to rest.")
+
+            sent_today_test = True
+    else:
+        sent_today_test = False
 
 
 @client.event
@@ -39,6 +79,9 @@ async def on_ready():
     channel = client.get_channel(1459950649427886295)
     await channel.send("Mephisto has awoken.")
     send_at_time.start()
+    send_at_time_test.start()
+    send_at_time_weekly.start()
+    send_at_time_test.start()  #on met le async fonction
     response = requests.get("https://raw.githubusercontent.com/EspresSoHin/Discord-Bot/refs/heads/Develop/crowkittenjokes.json") #added
     jokelist = response.json()
 
