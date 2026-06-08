@@ -10,13 +10,16 @@
   <li>✦ Responds to character-related triggers ⟡</li>
   <li>✦ Random positive affirmations among a list of responses⟡</li>
   <li>✦ Makes fun bubblewrap to pop⟡</li>
+  <li>✦ Comforting words and kitten or crow jokes </li>
+  <li>✦ Daily and weekly reminders for water and stamina </li>
+  
 
 <hr>
   
 <h2> 𓆩「What Next?」𓆪 </h2>
 
 <ul>
-  <li>✦ Use of timestamps to time scheduled daily encouraging and fun messages </li>
+  <li>✦ Embedded Mephisto dress up game </li>
   <li>✦ Birthday reminders with user inputs </li>
   <li>✦Welcome messages </li>
 
