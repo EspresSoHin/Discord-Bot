@@ -12,6 +12,7 @@
   <li>✦ Makes fun bubblewrap to pop⟡</li>
   <li>✦ Comforting words and kitten or crow jokes </li>
   <li>✦ Daily and weekly reminders for water and stamina </li>
+   <li>✦Welcome messages </li>
   
 
 <hr>
@@ -21,7 +22,8 @@
 <ul>
   <li>✦ Embedded Mephisto dress up game </li>
   <li>✦ Birthday reminders with user inputs </li>
-  <li>✦Welcome messages </li>
+  <li>✦ Random draws for raffles and giveaways </li>
+   <li>✦ Database to fetch stats and give funny comments about members based on their stats </li>
 
 <br>
   <p>
