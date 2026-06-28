@@ -7,8 +7,13 @@ import json
 
 intents = discord.Intents.default()
 intents.message_content = True
+intents.members = True
 
 client = discord.Client(intents=intents)
+
+##########################
+#  WATER DAILY REMINDER  #
+##########################
 
 sent_today = False
 
@@ -30,7 +35,11 @@ async def send_at_time():
     else:
         sent_today = False
 
-### REMINDER STAMINA BOTTLE
+############################
+#  REMINDER STAMINA BOTTLE #
+############################
+
+sent_this_week = False
 
 @tasks.loop(seconds=10)
 async def send_at_time_weekly():
@@ -38,21 +47,24 @@ async def send_at_time_weekly():
 
     now = datetime.datetime.now()
 
-    if now.weekday() == 5 and now.hour == 15 and now.minute == 30:
+    if now.weekday() == 5 and now.hour == 22 and now.minute == 30:
         if not sent_this_week:
             print("WEEKLY TASK TRIGGERED")
 
             channel = client.get_channel(1431335581983441098)
             if channel:
-                await channel.send("*Mephisto opens stamina bottle and spills it* <@USERID>, you should drink this! Caw caw!")
+                await channel.send("*Mephisto knocks on your window carrying stamina bottles. Alarms are blearing through his wings.* <@&1518554479606235166>, <:stamina:1518667179384639569> Caw <:stamina:1518667179384639569> Caw!<:stamina:1518667179384639569>")
 
             sent_this_week = True
     else:
         sent_this_week = False
 
+#########################
+#    Pour ajouter un    #
+# prochain reminder/test#
+#########################
 
-####Pour ajouter un prochain reminder ou un test
-
+sent_today_test = False
 @tasks.loop(seconds=10)
 async def send_at_time_test():
     global sent_today_test
@@ -79,13 +91,20 @@ async def on_ready():
     channel = client.get_channel(1459950649427886295)
     await channel.send("Mephisto has awoken.")
     send_at_time.start()
-    send_at_time_test.start()
     send_at_time_weekly.start()
     send_at_time_test.start()  #on met le async fonction
     response = requests.get("https://raw.githubusercontent.com/EspresSoHin/Discord-Bot/refs/heads/Develop/crowkittenjokes.json") #added
     jokelist = response.json()
 
 
+#########Welcome message
+
+@client.event
+async def on_member_join(member):
+    channel = client.get_channel(1435664795213758615)
+    await channel.send(f"CAW CAW!!! (Welcome to the Armory!), <@{member.id}>")
+
+####### messages
 
 @client.event
 async def on_message(message):
