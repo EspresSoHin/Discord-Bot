@@ -117,5 +117,5 @@ def start_reminders(bot_client):
 
     send_at_time.start()
     send_at_time_weekly.start()
-    sent_at_time_qotd.start()
+    send_at_time_qotd.start()
     send_at_time_test.start()
