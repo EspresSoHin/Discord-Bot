@@ -4,6 +4,7 @@ from discord.ext import tasks
 import datetime
 import requests
 import json
+from zoneinfo import ZoneInfo #added
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -27,7 +28,7 @@ async def send_at_time():
         if not sent_today:
             print("TASK TRIGGERED")
 
-            channel = client.get_channel(1431335581983441098)
+            channel = client.get_channel(generalID)
             if channel:
                 await channel.send("*Mephisto pushes a water bottle towards you with his beak.* Caw caw! ")
 
@@ -51,13 +52,45 @@ async def send_at_time_weekly():
         if not sent_this_week:
             print("WEEKLY TASK TRIGGERED")
 
-            channel = client.get_channel(1431335581983441098)
+            channel = client.get_channel(generalID)
             if channel:
-                await channel.send("*Mephisto knocks on your window carrying stamina bottles. Alarms are blearing through his wings.* <@&1518554479606235166>, <:stamina:1518667179384639569> Caw <:stamina:1518667179384639569> Caw!<:stamina:1518667179384639569>")
+                await channel.send("*Mephisto knocks on your window carrying stamina bottles. Alarms are blearing through his wings.* <@&roleID>, <:stamina:1550225208546295908> Caw <:stamina:1550225208546295908> Caw!<:stamina:1550225208546295908>")
 
             sent_this_week = True
     else:
         sent_this_week = False
+
+
+#########################
+#         QOTD          #
+#########################
+
+sent_today_qotd = False
+@tasks.loop(seconds=10)
+async def send_at_time_qotd():
+    global sent_today_qotd
+
+    now = datetime.datetime.now(ZoneInfo("America/New_York"))
+
+    qotdchannels = [
+    client.get_channel(1524597999974486320), #general
+    client.get_channel(1525223630349402242), #og5only
+    client.get_channel(1542368348208107594) #forwarding
+]
+
+    if now.hour == 1 and now.minute == 15:
+        if not sent_today_qotd:
+            print("QOTD TASK TRIGGERED")
+
+            for channel in qotdchannels:
+                if channel:
+                    await channel.send("CAW!! Caw caw caw!! *Sylus voice in Mephisto's speakers:* Kittens, Question of the day dropped at <#1526731037357641840>. Don't be late. \n\n Come on kitten, clock is ticking...")
+
+            sent_today_qotd = True
+    else:
+        sent_today_qotd = False
+
+
 
 #########################
 #    Pour ajouter un    #
@@ -75,7 +108,7 @@ async def send_at_time_test():
         if not sent_today_test:
             print("TEST TASK TRIGGERED")
 
-            channel = client.get_channel(1431335581983441098)
+            channel = client.get_channel(channelID)
             if channel:
                 await channel.send("*Sylus voice in Mephisto's speakers:* Sohin, that's enough. Mephisto needs to rest.")
 
@@ -84,27 +117,41 @@ async def send_at_time_test():
         sent_today_test = False
 
 
+#########################
+#     Initialisation    #
+#         du bot        #
+#########################
+
+
 @client.event
 async def on_ready():
     global jokelist
     print(f"We have logged in as {client.user}")
-    channel = client.get_channel(1459950649427886295)
+    channel = client.get_channel(botchannelID)
     await channel.send("Mephisto has awoken.")
     send_at_time.start()
     send_at_time_weekly.start()
-    send_at_time_test.start()  #on met le async fonction
+    sent_at_time_qotd.start() #added
+    send_at_time_test.start()  #TEST
     response = requests.get("https://raw.githubusercontent.com/EspresSoHin/Discord-Bot/refs/heads/Develop/crowkittenjokes.json") #added
     jokelist = response.json()
 
 
-#########Welcome message
+######################
+#       Welcome      #
+#       message      #
+######################
+
 
 @client.event
 async def on_member_join(member):
-    channel = client.get_channel(1435664795213758615)
-    await channel.send(f"CAW CAW!!! (Welcome to the Armory!), <@{member.id}>")
+    channel = client.get_channel(welcomechannelID)
+    await channel.send(f"CAW CAW!!! (Welcome to the server!), <@{member.id}> \n\n https://c.tenor.com/YlkdBVligYwAAAAd/tenor.gif")
 
-####### messages
+
+######################
+#      Triggers      #
+######################
 
 @client.event
 async def on_message(message):
@@ -153,17 +200,17 @@ async def on_message(message):
     if "hurts" in message.content.lower():
         await message.channel.send("*looks sad* Caw... *brings you a little gem*")
         
-    if "buffisto" in message.content.lower():
-        sticker = await message.guild.fetch_sticker(1486088700319236127)
+    if "yay" in message.content.lower():
+        sticker = await message.guild.fetch_sticker(stickerID)
         await message.channel.send(stickers=[sticker]) 
 
     if "mephisto" in message.content.lower():
-        emoji = '<:blackmeph:1454276098270564373>'
+        emoji = '<:mephie:1550153664486838332>'
         await message.add_reaction(emoji)
 
     if message.content.lower().startswith("badass trigger"):
         await message.channel.send(
-            "https://images-ext-1.discordapp.net/external/PlFF4m9k4UtMs7Obbztrmc5YyOuq3rodXgNMMfC7hQ8/https/media.tenor.com/qfSDkr0lVSAAAAPo/merlo-uccelli.mp4"
+            "https://media.tenor.com/qfSDkr0lVSAAAAAM/merlo-uccelli.gif"
         )
 
     if "play boss.mp3" in message.content.lower():
@@ -226,7 +273,7 @@ async def on_message(message):
         joke = random.choice(jokelist["sylus"])
         await message.channel.send(joke)
 
-    if "may i have a hug?" in message.content.lower():
+    if "may i have a hug?" in message.content.lower(): #or can you give me a hug? a voir 
         await message.channel.send("*Mephisto wraps his wings around you gently, providing a warm and comforting embrace*")
 
     if "$commands" in message.content.lower():
@@ -236,3 +283,12 @@ async def on_message(message):
 
 
 client.run("token")
+
+
+###############
+#    Notes    #
+###############
+
+#tagguer roles <@&roleID>
+#tagguer channel <#CHANNEL_ID>
+#tagguer membre <@userID>
