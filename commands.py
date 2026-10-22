@@ -4,6 +4,7 @@ import config_service as service
 
 CHANNEL_CHOICES = [app_commands.Choice(name=p, value=p) for p in service.CHANNEL_PURPOSES]
 ROLE_CHOICES = [app_commands.Choice(name=p, value=p) for p in service.ROLE_PURPOSES]
+REGION_CHOICES = [app_commands.Choice(name=r, value=r) for r in ["Asia", "Europe", "America"]]
 
 
 ######################################################
@@ -31,8 +32,8 @@ def register_commands(tree: app_commands.CommandTree):
     async def config_channel(interaction: discord.Interaction,
                              purpose: app_commands.Choice[str],
                              channel: discord.TextChannel):
-        can_send = channel.permissions_for(interaction.guild.me).send_messages #mais il s'appelle bot_can_send dans le service?
-        msg = await service.set_channel(interaction.guild_id, purpose.value, channel.id, can_send)
+        bot_can_send = channel.permissions_for(interaction.guild.me).send_messages
+        msg = await service.set_channel(interaction.guild_id, purpose.value, channel.id, bot_can_send)
         await interaction.response.send_message(msg, ephemeral=True)
 
 ######################################################
@@ -83,6 +84,33 @@ def register_commands(tree: app_commands.CommandTree):
 
 
 ######################################################
+#              server reset reminders                #
+######################################################
+
+    @config.command(name="reset-reminder", description="Daily server reset reminder for a game region")
+    @app_commands.checks.has_permissions(manage_guild=True)
+    @app_commands.choices(region=REGION_CHOICES)
+    async def config_reset_reminder(interaction: discord.Interaction,
+                                    region: app_commands.Choice[str],
+                                    channel: discord.TextChannel,
+                                    role: discord.Role | None = None):
+        bot_can_send = channel.permissions_for(interaction.guild.me).send_messages
+        role_id = role.id if role else None
+        msg = await service.set_reset_reminder(interaction.guild_id, region.value,
+                                            channel.id, role_id, bot_can_send)
+        await interaction.response.send_message(msg, ephemeral=True)
+
+
+    @config.command(name="unset-reset-reminder", description="Remove a reset reminder")
+    @app_commands.checks.has_permissions(manage_guild=True)
+    @app_commands.choices(region=REGION_CHOICES)
+    async def config_unset_reset_reminder(interaction: discord.Interaction,
+                                        region: app_commands.Choice[str]):
+        msg = await service.unset_reset_reminder(interaction.guild_id, region.value)
+        await interaction.response.send_message(msg, ephemeral=True)
+
+
+######################################################
 #                final config recap                  #
 ######################################################
     
@@ -94,7 +122,6 @@ def register_commands(tree: app_commands.CommandTree):
         await interaction.response.send_message(msg, ephemeral=True)
 
     tree.add_command(config)
-
 
 
 

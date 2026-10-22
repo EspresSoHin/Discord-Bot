@@ -87,18 +87,15 @@ async def get_role(guild_id: int, purpose: str) -> int | None:
 
 async def delete_channel(guild_id: int, purpose: str) -> bool:
     deleted = await pool.fetchval(
-        """DELETE FROM mephistobotdb.channels WHERE guild_id = $1 AND purpose = $2
-           RETURNING id""",
+        """DELETE FROM mephistobotdb.channels WHERE guild_id = $1 AND purpose = $2 RETURNING id""",
         guild_id, purpose)
     return deleted is not None
 
 async def delete_role(guild_id: int, purpose: str) -> bool:
     deleted = await pool.fetchval(
-        """DELETE FROM mephistobotdb.roles WHERE guild_id = $1 AND purpose = $2
-           RETURNING id""",
+        """DELETE FROM mephistobotdb.roles WHERE guild_id = $1 AND purpose = $2 RETURNING id""",
         guild_id, purpose)
     return deleted is not None
-
 
 
 ##########################################################################################################################
@@ -108,5 +105,42 @@ async def delete_role(guild_id: int, purpose: str) -> bool:
 async def get_all_reminders():
     return await pool.fetch(
         """SELECT r.guild_id, r.channel_id, r.role_id, g.name, g.timezone, g.reset_hour, g.reset_min
-           FROM reminders r JOIN regions g ON g.id = r.region_id
+           FROM mephistobotdb.reminders r JOIN regions g ON g.id = r.region_id
            WHERE r.enabled""")
+
+
+##########################################################################################################################
+# --------------------------------------------------- Reminders ---------------------------------------------------------#
+##########################################################################################################################
+
+async def get_region_by_name(name: str):
+    return await pool.fetchrow(
+        "SELECT * FROM mephistobotdb.regions WHERE name = $1", name)
+
+async def set_reminder(guild_id: int, region_id: int, channel_id: int, role_id: int | None):
+    await pool.execute(
+        """INSERT INTO mephistobotdb.reminders (guild_id, region_id, channel_id, role_id)
+           VALUES ($1, $2, $3, $4)
+           ON CONFLICT (guild_id, region_id)
+           DO UPDATE SET channel_id = EXCLUDED.channel_id, role_id = EXCLUDED.role_id, enabled = TRUE""",
+        guild_id, region_id, channel_id, role_id)
+
+async def delete_reminder(guild_id: int, region_id: int) -> bool:
+    deleted = await pool.fetchval(
+        """DELETE FROM mephistobotdb.reminders WHERE guild_id = $1 AND region_id = $2 RETURNING region_id""",
+        guild_id, region_id)
+    return deleted is not None
+
+
+##########################################################################################################################
+# ------------------------------------- Servers with reminders and their roles ------------------------------------------#
+##########################################################################################################################
+
+async def get_reminder_targets(purpose: str):
+    return await pool.fetch(
+        """SELECT c.guild_id, c.channel_id, r.role_id
+           FROM mephistobotdb.channels c
+           LEFT JOIN mephistobotdb.roles r
+                  ON r.guild_id = c.guild_id AND r.purpose = c.purpose
+           WHERE c.purpose = $1""",
+        purpose)
