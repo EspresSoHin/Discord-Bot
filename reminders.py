@@ -4,6 +4,30 @@ import datetime
 
 client = None
 
+
+sent_today = False
+
+#@tasks.loop(seconds=10)
+#async def send_at_time():
+    #global sent_today
+
+    #now = datetime.datetime.now()
+
+    #if now.hour == 17 and now.minute == 30:
+        #if not sent_today:
+            #print("TASK TRIGGERED")
+
+            #for server_id, config in REMINDER_CONFIG.items():
+
+                #channel = client.get_channel(config["channel_id"])
+                #if channel:
+                    #await channel.send(
+                        #"*Mephisto pushes a water bottle towards you with his beak.* Caw caw!")
+
+            #sent_today = True
+    #else:
+        #sent_today = False
+
 ##########################
 #  Water Daily Reminder  #
 ##########################
@@ -32,6 +56,44 @@ async def send_at_time():
 ############################
 #  Stamina Bottle Reminder #
 ############################
+
+#sent_this_week = False
+
+#@tasks.loop(seconds=10)
+#async def send_at_time_weekly():
+
+    #global sent_this_week
+
+    #now = datetime.datetime.now()
+
+    #if now.weekday() == 5 and now.hour == 22 and now.minute == 30:
+
+        #if not sent_this_week:
+
+            #print("WEEKLY TASK TRIGGERED")
+
+            #for server_id, config in REMINDER_CONFIG.items():
+
+                #channel = client.get_channel(config["channel_id"])
+
+                #if channel:
+                    #await channel.send(
+                        #"*Mephisto knocks on your window carrying stamina bottles. "
+                        #"Alarms are blearing through his wings.* "
+                        #f"<@&{config['weekly_role_id']}>, "
+                        #"<:stamina:1550225208546295908> "
+                        #"Caw "
+                        #"<:stamina:1550225208546295908> "
+                        #"Caw! "
+                        #"<:stamina:1550225208546295908>"
+                    #)
+
+            #sent_this_week = True
+
+    #else:
+        #sent_this_week = False
+
+
 
 sent_this_week = False
 
@@ -83,6 +145,21 @@ async def send_at_time_qotd():
             sent_today_qotd = True
     else:
         sent_today_qotd = False
+
+
+#########################
+#    Servers Reset      #
+#########################
+
+
+#with open("server_resets.json", "r", encoding="utf-8") as file:
+    #reminders = json.load(file)
+
+#a ajouter 3 reminders pour 3 server resets tag chaque role dans ingame channel 1542399247549337601. 
+#Hunter Role ID: 1543465999582503068
+#NA Server role: 1526769673419620383
+#EU Server role: 1526769909973913770
+#Asia Server role: 1526769974650343424
 
 
 
