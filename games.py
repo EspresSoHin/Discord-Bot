@@ -5,7 +5,7 @@ async def start_games(message):
 
     content = message.content.lower()
 
-    if message.content.lower().startswith("bubblewrap!"):
+    if message.content.lower().startswith("$bubblewrap"):
             bubbles = ["||pffft||", "||POP||"]
             secret_bubble1 = "||♡♡♡||"
             secret_bubble2 = "||CAW||"
