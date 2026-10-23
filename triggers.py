@@ -1,4 +1,5 @@
 import random
+import stats_service as stats
 
 ######################
 #      Triggers      #
@@ -9,24 +10,26 @@ async def handle_trigger(message, jokelist):
     content = message.content.lower()
 
     triggers = [
-        (("patpat", "pat pat"), "*rubs against your hand*"),
-        ("shoo", "*flies away*"),
-        (("pspsps", "ps ps ps"), "Caw? *bonks head on you*"),
-        ("caw", "*pecks your nose*"),
-        ("boop", "Caw... *nuzzles you*"),
-        ("flick", "*flapping his wings aggressively*"),
-        ("boo!", "CAW! *hides behind Sylus*"),
-        ("good night mephie", "*blinks eyes slowly and shuts down*"),
-        ("good morning mephie", "!!! Morning Caw!!!"),
-        ("mephie?", "*tilts head* Caw?"),
-        ("good boy", "*puffs up proudly and does a little dance* Caw!"),
-        ("bad boy", "*shakes blood off his wings and beak*"),
-        ("i love you", "*hides face bashfully* Caw... ♡"),
+        (("patpat", "pat pat"), "*rubs against your hand*", "pats"),
+        ("shoo", "*flies away*", None),
+        (("pspsps", "ps ps ps"), "Caw? *bonks head on you*", None),
+        ("caw", "*pecks your nose*", "caw"),
+        ("boop", "Caw... *nuzzles you*", None),
+        ("flick", "*flapping his wings aggressively*", None),
+        ("boo!", "CAW! *hides behind Sylus*", None),
+        ("good night mephie", "*blinks eyes slowly and shuts down*", None),
+        ("good morning mephie", "!!! Morning Caw!!!", None),
+        ("mephie?", "*tilts head* Caw?", None),
+        ("good boy", "*puffs up proudly and does a little dance* Caw!", None),
+        ("bad boy", "*shakes blood off his wings and beak*", None),
+        ("i love you", "*hides face bashfully* Caw... ♡", None),
     ]
 
-    for command, response in triggers:
+    for command, response, counter in triggers:
         if content.startswith(command):
             await message.channel.send(response)
+            if counter:
+                await stats.record(message.guild.id, counter)
             break
 
     #############  Many commands, one reaction   ##################
@@ -48,6 +51,7 @@ async def handle_trigger(message, jokelist):
 
     if "hurts" in content:
         await message.channel.send("*looks sad* Caw... *brings you a little gem*")
+        await stats.record(message.guild.id, "gems")
 
     if "my boy" in content:
         await message.channel.send("*Mephisto nods cutely at you*")
@@ -60,14 +64,17 @@ async def handle_trigger(message, jokelist):
     if "tell me a crow joke" in content:
         joke = random.choice(jokelist["crow"])
         await message.channel.send(joke)
+        await stats.record(message.guild.id, "jokes")
 
     if "tell me a kitten joke" in content:
         joke = random.choice(jokelist["kitten"])
         await message.channel.send(joke)
+        await stats.record(message.guild.id, "jokes")
 
     if "tell me a joke, sylus" in content:
         joke = random.choice(jokelist["sylus"])
         await message.channel.send(joke)
+        await stats.record(message.guild.id, "jokes")
 
     ###############   Non-text reactions    ###################
 
@@ -121,7 +128,17 @@ async def handle_trigger(message, jokelist):
 
     ###############   Commands    ###################
 
+    if content.startswith("$mephisto"):
+        await message.channel.send(await stats.mephisto_report(message.guild.id))
+
     if "$commands" in content:
-        await message.channel.send(
-            "*Sylus voice in speaker:* Here are Mephisto's commands.\n\n patpat\n shoo\n pspsps\n caw\n boop\n flick\n boo!\n Good night Mephie\n Good morning Mephie\n Mephie?\n Good boy\n Bad boy\n I love you\n yay\n Badass trigger\n play boss.mp3\n Comfort me Mephie\n $Bubblewrap\n Tell me a crow joke\n Tell me a kitten joke\n Tell me a joke, Sylus\n Ask for a hug\n"
-        )
+        lines = [
+            "*Sylus voice in speaker:* Here are Mephisto's commands.", "",
+            "patpat", "shoo", "pspsps", "caw", "boop", "flick", "boo!",
+            "Good night Mephie", "Good morning Mephie", "Mephie?",
+            "Good boy", "Bad boy", "I love you",
+            "Badass trigger", "play boss.mp3", "Comfort me Mephie",
+            "Tell me a crow joke", "Tell me a kitten joke", "Tell me a joke, Sylus",
+            "Ask for a hug", "$mephisto", "$Bubblewrap", #yay sticker
+        ]
+        await message.channel.send("\n".join(lines))

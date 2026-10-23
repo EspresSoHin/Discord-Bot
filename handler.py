@@ -7,7 +7,7 @@ from games import start_games
 
 WELCOME_GIF = "https://c.tenor.com/YlkdBVligYwAAAAd/tenor.gif"
 
-# Handler (la "route")
+
 
 def register_handlers(client):
 
