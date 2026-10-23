@@ -1,6 +1,6 @@
 import discord
 from discord import app_commands
-import config_service as service
+from service import config_service as service
 
 CHANNEL_CHOICES = [app_commands.Choice(name=p, value=p) for p in service.CHANNEL_PURPOSES]
 ROLE_CHOICES = [app_commands.Choice(name=p, value=p) for p in service.ROLE_PURPOSES]

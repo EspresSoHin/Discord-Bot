@@ -1,5 +1,5 @@
 import random
-import stats_service as stats
+from service import stats_service as stats
 
 
 async def start_games(message):
