@@ -1,7 +1,7 @@
 import database.postgres as db
 
 CHANNEL_PURPOSES = ["welcome", "general", "daily", "weekly"]
-ROLE_PURPOSES = ["reminders", "all"]
+ROLE_PURPOSES = ["weekly"] #"reminders", "all"
 
 ##################################
 #   Choose a channel and check   #
