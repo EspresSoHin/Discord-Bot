@@ -5,8 +5,9 @@ import os
 from discord import app_commands
 from handler import register_handlers
 from commands import register_commands
+from reminders import start_reminders
 import database.postgres as db
-
+import database.mongodb as mongo
 
 load_dotenv()
 
@@ -24,6 +25,7 @@ class Mephisto(discord.Client):
 
     async def setup_hook(self):
         await db.init_pool()
+        await mongo.init_mongo()
         self.jokelist = requests.get(JOKES_URL).json()
         register_commands(self.tree)
         await self.tree.sync()
@@ -46,7 +48,7 @@ async def on_ready():
     if test_channel_id:
         await client.get_channel(int(test_channel_id)).send("Mephisto has awoken.")
     
-    #start_reminders(client)
+    start_reminders(client)
 
 
 register_handlers(client)

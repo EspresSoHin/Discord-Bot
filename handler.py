@@ -23,6 +23,7 @@ def register_handlers(client):
     @client.event
     async def on_guild_remove(guild):
         await db.remove_server(guild.id)
+        await mongo.delete_stats(guild.id) #no ON CASCADE with noSQL, so do this
 
 
     ######################
