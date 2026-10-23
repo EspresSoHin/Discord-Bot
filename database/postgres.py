@@ -105,7 +105,7 @@ async def delete_role(guild_id: int, purpose: str) -> bool:
 async def get_all_reminders():
     return await pool.fetch(
         """SELECT r.guild_id, r.channel_id, r.role_id, g.name, g.timezone, g.reset_hour, g.reset_min
-           FROM mephistobotdb.reminders r JOIN regions g ON g.id = r.region_id
+           FROM mephistobotdb.reminders r JOIN mephistobotdb.regions g ON g.id = r.region_id
            WHERE r.enabled""")
 
 
