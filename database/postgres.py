@@ -9,6 +9,8 @@ async def init_pool():
     pool = await asyncpg.create_pool(
         os.environ["DATABASE_URL"],
         statement_cache_size=0,
+        min_size=1,
+        max_size=5,
     )
 
 "SELECT channel_id FROM mephistobotdb.channels WHERE guild_id = $1 AND purpose = $2"
