@@ -111,6 +111,27 @@ def register_commands(tree: app_commands.CommandTree):
 
 
 ######################################################
+#                set reaction sticker                #
+######################################################
+
+    @config.command(name="sticker", description="Choose the sticker Mephisto uses to react happily with")
+    @app_commands.checks.has_permissions(manage_guild=True)
+    async def config_sticker(interaction: discord.Interaction, sticker: str):
+        s = discord.utils.get(interaction.guild.stickers, name=sticker)
+        if s is None:
+            msg = "Caw? I can't find that sticker on this server."
+        else:
+            msg = await service.set_sticker(interaction.guild, s)
+        await interaction.response.send_message(msg, ephemeral=True)
+
+    @config_sticker.autocomplete("sticker")
+    async def sticker_autocomplete(interaction: discord.Interaction, current: str):
+        return [app_commands.Choice(name=s.name, value=s.name)
+                for s in interaction.guild.stickers
+                if current.lower() in s.name.lower()][:25]
+
+
+######################################################
 #                final config recap                  #
 ######################################################
     

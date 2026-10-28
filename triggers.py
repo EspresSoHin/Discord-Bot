@@ -1,5 +1,7 @@
 import random
+import discord
 from service import stats_service as stats
+import database.postgres as db
 
 ######################
 #      Triggers      #
@@ -78,20 +80,11 @@ async def handle_trigger(message, jokelist):
 
     ###############   Non-text reactions    ###################
 
-    #if "yay" in content:
-        #sticker = await message.guild.fetch_sticker(stickerID)
-        #await message.channel.send(stickers=[sticker]) #voir pour le sticker
-    
-    #YAY_STICKERS = {
-    #SERVER_ID_1: ID_SERVER_STICKER_1,
-    #SERVEUR_ID_2: ID_SERVER_STICKER_2}
-
-    #if "yay" in content:
-        #sticker_id = YAY_STICKERS.get(message.guild.id)
-
-        #if sticker_id is not None:
-            #sticker = await message.guild.fetch_sticker(sticker_id)
-            #await message.channel.send(stickers=[sticker])
+    if "yay" in content:
+        sticker_id = await db.get_reaction_sticker(message.guild.id)
+        sticker = discord.utils.get(message.guild.stickers, id=sticker_id) if sticker_id else None
+        if sticker is not None:
+            await message.channel.send(stickers=[sticker])
 
 
     if "mephisto" in content:

@@ -1,4 +1,6 @@
 import database.postgres as db
+import discord
+
 
 CHANNEL_PURPOSES = ["welcome", "general", "daily", "weekly"]
 ROLE_PURPOSES = ["weekly"] #"reminders", "all"
@@ -81,6 +83,22 @@ async def unset_reset_reminder(guild_id: int, region_name: str) -> str:
     if removed:
         return f"**{region_name}** reset reminder has been removed, Caw caw!."
     return f"Caw? There was no **{region_name}** reset reminder."
+
+
+##################################
+#          Set & remove          #
+#           yay sticker          #
+##################################
+
+async def set_sticker(guild, sticker) -> str:
+    if discord.utils.get(guild.stickers, id=sticker.id) is None:
+        return "Caw? That sticker isn't from this server..."
+    await db.set_reaction_sticker(guild.id, sticker.id)
+    return f"CAW CAW! Mephisto will celebrate with **{sticker.name}**."
+
+async def unset_sticker(guild_id: int) -> str:
+    await db.set_reaction_sticker(guild_id, None)
+    return "Caw! Yay sticker removed."
 
 
 ##################################

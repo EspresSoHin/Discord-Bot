@@ -83,6 +83,22 @@ async def get_role(guild_id: int, purpose: str) -> int | None:
 
 
 ##########################################################################################################################
+# ------------------------------------------------- Set yay stickers ----------------------------------------------------#
+##########################################################################################################################
+
+
+async def set_reaction_sticker(guild_id: int, sticker_id: int | None):
+    await pool.execute(
+        "UPDATE mephistobotdb.servers SET yay_sticker_id = $2 WHERE guild_id = $1",
+        guild_id, sticker_id)
+
+async def get_reaction_sticker(guild_id: int) -> int | None:
+    return await pool.fetchval(
+        "SELECT yay_sticker_id FROM mephistobotdb.servers WHERE guild_id = $1",
+        guild_id)
+
+
+##########################################################################################################################
 # --------------------------------------------- Delete channels & roles -------------------------------------------------#
 ##########################################################################################################################
 
