@@ -1,4 +1,3 @@
-#readme
 <h1 align="center"> 𓆩༺ "Mephisto" the mechanical crow ༻𓆪 </h1>
  
 <p align="center">
