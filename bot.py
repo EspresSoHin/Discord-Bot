@@ -1,72 +1,55 @@
+from dotenv import load_dotenv
 import discord
 import requests
-import json
-from triggers import handle_trigger
+import os
+from discord import app_commands
+from handler import register_handlers
+from commands import register_commands
 from reminders import start_reminders
-from games import start_games
+import database.postgres as db
+import database.mongodb as mongo
 
+load_dotenv()
+
+JOKES_URL = "https://raw.githubusercontent.com/EspresSoHin/Discord-Bot/refs/heads/Develop/crowkittenjokes.json"
 
 intents = discord.Intents.default()
 intents.message_content = True
 intents.members = True
 
-client = discord.Client(intents=intents)
+
+class Mephisto(discord.Client):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs) #do what you gotta do as a discord Client, then add the command tree
+        self.tree = app_commands.CommandTree(self)
+
+    async def setup_hook(self):
+        await db.init_pool()
+        await mongo.init_mongo()
+        self.jokelist = requests.get(JOKES_URL).json()
+        register_commands(self.tree)
+        await self.tree.sync()
+
+client = Mephisto(intents=intents)
 
 
-#########################
-#     Initialisation    #
-#         du bot        #
-#########################
-
-
-@client.event
-async def on_message(message):
-    if message.author == client.user:
-        return
-
-    await handle_trigger(message)
-    await start_games(message)
-
+##########################
+#   Bot Initialization   #
+########################## 
 
 
 @client.event
 async def on_ready():
-    global jokelist
-
     print(f"We have logged in as {client.user}")
+    for guild in client.guilds:
+        await db.add_server(guild.id, guild.name)
 
-    channel = client.get_channel(botchannelID)
-    await channel.send("Mephisto has awoken.")
-
-    response = requests.get(
-        "https://raw.githubusercontent.com/EspresSoHin/Discord-Bot/refs/heads/Develop/crowkittenjokes.json"
-    )
-    jokelist = response.json()
-
+    test_channel_id = os.environ.get("TEST_CHANNEL_ID")
+    if test_channel_id:
+        await client.get_channel(int(test_channel_id)).send("Mephisto has awoken.")
+    
     start_reminders(client)
 
 
-
-######################
-#   Welcome message  #
-######################
-
-
-@client.event
-async def on_member_join(member):
-    channel = client.get_channel(welcomechannelID)
-    await channel.send(f"CAW CAW!!! (Welcome to the server!), <@{member.id}> \n\n https://c.tenor.com/YlkdBVligYwAAAAd/tenor.gif")
-
-
-
-
-client.run("TOKEN")
-
-
-###############
-#    Notes    #
-###############
-
-#tagguer roles <@&roleID>
-#tagguer channel <#CHANNEL_ID>
-#tagguer membre <@userID>
+register_handlers(client)
+client.run(os.environ["TOKEN"])

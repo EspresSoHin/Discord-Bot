@@ -1,5 +1,6 @@
 import random
-#bubblewrap, gems games, raffles...
+from service import stats_service as stats
+
 
 async def start_games(message):
 
@@ -28,3 +29,4 @@ async def start_games(message):
             bubble_wrap = "\n".join(" ".join(row) for row in grid)
 
             await message.channel.send(bubble_wrap)
+            await stats.record(message.guild.id, "bubblewrap")

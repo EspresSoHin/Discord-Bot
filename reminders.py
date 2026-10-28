@@ -1,121 +1,89 @@
+import discord
 from discord.ext import tasks
 from zoneinfo import ZoneInfo
 import datetime
+import database.postgres as db
 
 client = None
+
+
+# Wispbyte server time UTC+3
+SERVER_TZ = datetime.timezone(datetime.timedelta(hours=3))
+
+
+#########################
+#  reminders safe init  #
+#########################
+
+    # If one channel has an error, prevents from crashing on all servers
+
+async def safe_send(channel, text: str):
+    try:
+        await channel.send(text)
+    except (discord.Forbidden, discord.HTTPException) as e:
+        print(f"Reminder not sent in channel {channel.id}: {e}")
+
+
+async def send_to_targets(purpose: str, text: str):
+    for row in await db.get_reminder_targets(purpose):
+        channel = client.get_channel(row["channel_id"])
+        if channel is None:
+            continue
+        ping = f"<@&{row['role_id']}> " if row["role_id"] else ""
+        await safe_send(channel, ping + text)
+
 
 ##########################
 #  Water Daily Reminder  #
 ##########################
 
-sent_today = False
-
-@tasks.loop(seconds=10)
-async def send_at_time():
-    global sent_today
-
-    now = datetime.datetime.now()
-
-    if now.hour == 17 and now.minute == 30:
-        if not sent_today:
-            print("TASK TRIGGERED")
-
-            channel = client.get_channel(generalID)
-            if channel:
-                await channel.send("*Mephisto pushes a water bottle towards you with his beak.* Caw caw! ")
-
-            sent_today = True
-    else:
-        sent_today = False
+@tasks.loop(time=datetime.time(hour=17, minute=30, tzinfo=SERVER_TZ))
+async def water_reminder():
+    await send_to_targets(
+        "daily",
+        "*Mephisto pushes a water bottle towards you with his beak.* Caw caw!")
 
 
 ############################
-#  Stamina Bottle Reminder #
+#  Stamina Weekly Reminder #
 ############################
 
-sent_this_week = False
-
-@tasks.loop(seconds=10)
-async def send_at_time_weekly():
-    global sent_this_week 
-
-    now = datetime.datetime.now()
-
-    if now.weekday() == 5 and now.hour == 22 and now.minute == 30:
-        if not sent_this_week:
-            print("WEEKLY TASK TRIGGERED")
-
-            channel = client.get_channel(generalID)
-            if channel:
-                await channel.send("*Mephisto knocks on your window carrying stamina bottles. Alarms are blearing through his wings.* <@&roleID>, <:stamina:1550225208546295908> Caw <:stamina:1550225208546295908> Caw!<:stamina:1550225208546295908>")
-
-            sent_this_week = True
-    else:
-        sent_this_week = False
-
+@tasks.loop(time=datetime.time(hour=22, minute=30, tzinfo=SERVER_TZ))
+async def stamina_reminder():
+    if datetime.datetime.now(SERVER_TZ).weekday() == 5:   # saturday
+        await send_to_targets(
+            "weekly",
+            "*Mephisto knocks on your window carrying stamina bottles. Alarms are blearing through his wings.* "
+            "<:stamina:1550225208546295908> Caw <:stamina:1550225208546295908> Caw! "
+            "<:stamina:1550225208546295908>")
 
 
 #########################
-#    QOTD Reminder      #
+#    Servers Reset      #
 #########################
 
-sent_today_qotd = False
-@tasks.loop(seconds=10)
-async def send_at_time_qotd():
-    global sent_today_qotd
-
-    now = datetime.datetime.now(ZoneInfo("America/New_York"))
-
-    qotdchannels = [
-    client.get_channel(channelID), 
-    client.get_channel(channelID), 
-    client.get_channel(channelID) 
-]
-
-    if now.hour == 1 and now.minute == 15:
-        if not sent_today_qotd:
-            print("QOTD TASK TRIGGERED")
-
-            for channel in qotdchannels:
-                if channel:
-                    await channel.send("CAW!! Caw caw caw!! *Sylus voice in Mephisto's speakers:* Kittens, Question of the day dropped at <#1526731037357641840>. Don't be late. \n\n Come on kitten, clock is ticking...")
-
-            sent_today_qotd = True
-    else:
-        sent_today_qotd = False
+@tasks.loop(minutes=1)
+async def reset_reminders():
+    for r in await db.get_all_reminders():
+        now = datetime.datetime.now(ZoneInfo(r["timezone"]))
+        
+        if now.hour == r["reset_hour"] and now.minute == r["reset_min"]:
+            channel = client.get_channel(r["channel_id"])
+            if channel is None:
+                continue
+            ping = f"<@&{r['role_id']}> " if r["role_id"] else ""
+            await safe_send(
+                channel,
+                f"{ping}*Mephisto preens his feathers and hits the speakers.* Caw! The **{r['name']}** server reset is now CAW!")
 
 
 
-#########################
-#    Pour ajouter un    #
-# prochain reminder/test#
-#########################
-
-sent_today_test = False
-@tasks.loop(seconds=10)
-async def send_at_time_test():
-    global sent_today_test
-
-    now = datetime.datetime.now()
-
-    if now.hour == 17 and now.minute == 30: #UTC+3
-        if not sent_today_test:
-            print("TEST TASK TRIGGERED")
-
-            channel = client.get_channel(channelID)
-            if channel:
-                await channel.send("*Sylus voice in Mephisto's speakers:* Sohin, that's enough. Mephisto needs to rest.")
-
-            sent_today_test = True
-    else:
-        sent_today_test = False
 
 
 def start_reminders(bot_client):
     global client
     client = bot_client
+    for task in (water_reminder, stamina_reminder, reset_reminders):
+        if not task.is_running():
+            task.start()
 
-    send_at_time.start()
-    send_at_time_weekly.start()
-    send_at_time_qotd.start()
-    send_at_time_test.start()
