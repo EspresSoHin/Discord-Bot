@@ -69,4 +69,4 @@ INSERT INTO mephistobotdb.regions (name, timezone) VALUES
 ------------------------------------------------------
 --on delete cascade so if you remove the bot from the server, all the data is removed
 
-ALTER TABLE mephistobotdb.servers ADD COLUMN IF NOT EXISTS yay_sticker_id BIGINT;
+ALTER TABLE mephistobotdb.servers ADD COLUMN IF NOT EXISTS reaction_sticker_id BIGINT;
