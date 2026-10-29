@@ -110,9 +110,16 @@ async def show_config(guild_id: int) -> str:
     channels = await db.get_channels(guild_id)
     roles = await db.get_roles(guild_id)
     server = await db.get_server(guild_id)
+    reminders = await db.get_guild_reminders(guild_id)
 
-    lines = [f"**Welcome messages:** {'on' if server['welcome_enabled'] else 'off'}", "", "**Channels**"]
+    lines = [f"**Welcome messages:** {'on' if server['welcome_enabled'] else 'off'}",
+             f"**Reaction sticker:** {'set' if server['reaction_sticker_id'] else 'none'}",
+            "", "**Channels**"]
     lines += [f"- {c['purpose']}: <#{c['channel_id']}>" for c in channels] or ["- none set"]
     lines += ["", "**Roles**"]
     lines += [f"- {r['purpose']}: <@&{r['role_id']}>" for r in roles] or ["- none set"]
+    lines += ["", "**Server resets**"]
+    lines += [f"- {rem['name']}: <#{rem['channel_id']}>"
+        + (f" (pings <@&{rem['role_id']}>)" if rem["role_id"] else "")
+        for rem in reminders] or ["- none set"]
     return "\n".join(lines)

@@ -89,12 +89,12 @@ async def get_role(guild_id: int, purpose: str) -> int | None:
 
 async def set_reaction_sticker(guild_id: int, sticker_id: int | None):
     await pool.execute(
-        "UPDATE mephistobotdb.servers SET yay_sticker_id = $2 WHERE guild_id = $1",
+        "UPDATE mephistobotdb.servers SET reaction_sticker_id = $2 WHERE guild_id = $1",
         guild_id, sticker_id)
 
 async def get_reaction_sticker(guild_id: int) -> int | None:
     return await pool.fetchval(
-        "SELECT yay_sticker_id FROM mephistobotdb.servers WHERE guild_id = $1",
+        "SELECT reaction_sticker_id FROM mephistobotdb.servers WHERE guild_id = $1",
         guild_id)
 
 
@@ -125,6 +125,15 @@ async def get_all_reminders():
         """SELECT r.guild_id, r.channel_id, r.role_id, g.name, g.timezone, g.reset_hour, g.reset_min
            FROM mephistobotdb.reminders r JOIN mephistobotdb.regions g ON g.id = r.region_id
            WHERE r.enabled""")
+
+
+async def get_guild_reminders(guild_id: int):
+    return await pool.fetch(
+        """SELECT g.name, r.channel_id, r.role_id
+           FROM mephistobotdb.reminders r JOIN mephistobotdb.regions g ON g.id = r.region_id
+           WHERE r.guild_id = $1 AND r.enabled
+           ORDER BY g.name""",
+        guild_id)
 
 
 ##########################################################################################################################
